@@ -7,18 +7,23 @@ import { Container } from "./styles";
 
 export const FormBox: React.FC = () => {
   const [description, setDescription] = useState("");
-  const [quantity, setQuantity] = useState(0);
+  const [quantity, setQuantity] = useState("");
 
   async function handleAddProduct() {
     try {
-      await firestore().collection("products").add({
-        description,
-        quantity,
-        done: false,
-        createdAt: firestore.FieldValue.serverTimestamp(),
-      });
+      await firestore()
+        .collection("products")
+        .add({
+          description,
+          quantity: Number(quantity),
+          done: false,
+          createdAt: firestore.FieldValue.serverTimestamp(),
+        });
 
-      Alert.alert("Produto", "Produto adicionado com sucesso.");
+      setDescription("");
+      setQuantity("");
+
+      // Alert.alert("Produto", "Produto adicionado com sucesso.");
     } catch (error) {
       console.warn(error);
       Alert.alert("Produto", "Não foi possível adicionar produto.");
@@ -39,8 +44,8 @@ export const FormBox: React.FC = () => {
         keyboardType="numeric"
         size="small"
         style={{ marginHorizontal: 8 }}
-        value={quantity.toString()}
-        onChangeText={text => setQuantity(Number(text))}
+        value={quantity}
+        onChangeText={setQuantity}
       />
 
       <ButtonIcon

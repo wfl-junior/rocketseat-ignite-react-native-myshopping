@@ -1,5 +1,6 @@
 import firestore from "@react-native-firebase/firestore";
 import React from "react";
+import { Alert } from "react-native";
 import { ButtonIcon } from "../ButtonIcon";
 import { Container, Info, Options, Quantity, Title } from "./styles";
 
@@ -23,6 +24,7 @@ export const Product: React.FC<Props> = ({ data }) => {
         .update({ done: !data.done });
     } catch (error) {
       console.warn(error);
+      Alert.alert("Produto", "Não foi possível alterar produto.");
     }
   }
 
@@ -34,6 +36,7 @@ export const Product: React.FC<Props> = ({ data }) => {
         .delete();
     } catch (error) {
       console.warn(error);
+      Alert.alert("Produto", "Não foi possível deletar produto.");
     }
   }
 
