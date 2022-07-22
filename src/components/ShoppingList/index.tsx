@@ -8,18 +8,18 @@ export const ShoppingList: React.FC = () => {
   const [products, setProducts] = useState<ProductProps[]>([]);
 
   useEffect(() => {
-    firestore()
+    const subscriber = firestore()
       .collection<ProductProps>("products")
-      .get()
-      .then(response => {
-        const data = response.docs.map(document => ({
+      .onSnapshot(snapshot => {
+        const data = snapshot.docs.map(document => ({
           ...document.data(),
           id: document.id,
         }));
 
         setProducts(data);
-      })
-      .catch(console.warn);
+      }, console.warn);
+
+    return subscriber;
   }, []);
 
   return (
