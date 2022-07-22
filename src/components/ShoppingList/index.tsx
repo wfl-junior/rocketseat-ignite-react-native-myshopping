@@ -10,11 +10,14 @@ export const ShoppingList: React.FC = () => {
   useEffect(() => {
     const subscriber = firestore()
       .collection<ProductProps>("products")
+      .orderBy("description", "asc")
       .onSnapshot(snapshot => {
-        const data = snapshot.docs.map(document => ({
-          ...document.data(),
-          id: document.id,
-        }));
+        const data = snapshot.docs.map(
+          (document): ProductProps => ({
+            ...document.data(),
+            id: document.id,
+          }),
+        );
 
         setProducts(data);
       }, console.warn);
