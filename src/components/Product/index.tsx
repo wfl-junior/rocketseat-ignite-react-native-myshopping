@@ -26,6 +26,17 @@ export const Product: React.FC<Props> = ({ data }) => {
     }
   }
 
+  async function handleDeleteProduct() {
+    try {
+      await firestore()
+        .collection<ProductProps>("products")
+        .doc(data.id)
+        .delete();
+    } catch (error) {
+      console.warn(error);
+    }
+  }
+
   return (
     <Container>
       <Info>
@@ -40,7 +51,7 @@ export const Product: React.FC<Props> = ({ data }) => {
           onPress={handleToggleDone}
         />
 
-        <ButtonIcon icon="delete" color="alert" />
+        <ButtonIcon icon="delete" color="alert" onPress={handleDeleteProduct} />
       </Options>
     </Container>
   );
