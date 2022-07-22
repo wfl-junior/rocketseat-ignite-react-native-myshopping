@@ -8,6 +8,7 @@ import { Container, PhotoInfo } from "./styles";
 
 export const Receipts: React.FC = () => {
   const [images, setImages] = useState<FileProps[]>([]);
+  const [selectedImage, setSelectedImage] = useState("");
 
   useEffect(() => {
     storage()
@@ -26,11 +27,16 @@ export const Receipts: React.FC = () => {
       .catch(console.warn);
   }, []);
 
+  async function handleShowImage(path: FileProps["path"]) {
+    const imageUrl = await storage().ref(path).getDownloadURL();
+    setSelectedImage(imageUrl);
+  }
+
   return (
     <Container>
       <Header title="Comprovantes" />
 
-      <Photo uri="" />
+      <Photo uri={selectedImage} />
 
       <PhotoInfo>Informações da foto</PhotoInfo>
 
@@ -38,7 +44,11 @@ export const Receipts: React.FC = () => {
         data={images}
         keyExtractor={image => image.name}
         renderItem={({ item: image }) => (
-          <File data={image} onShow={() => {}} onDelete={() => {}} />
+          <File
+            data={image}
+            onShow={() => handleShowImage(image.path)}
+            onDelete={() => {}}
+          />
         )}
         contentContainerStyle={{ paddingBottom: 100 }}
         showsVerticalScrollIndicator={false}
