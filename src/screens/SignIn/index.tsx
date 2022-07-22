@@ -23,10 +23,29 @@ export const SignIn: React.FC = () => {
   async function handleSignUp() {
     try {
       await auth().createUserWithEmailAndPassword(email, password);
-      Alert.alert("Entrar", "Conta criada com sucesso.");
-    } catch (error) {
-      console.warn(error);
-      Alert.alert("Entrar", "Não foi possível criar sua conta.");
+      Alert.alert("Cadastro", "Conta criada com sucesso.");
+    } catch (error: any) {
+      let errorMessage = "Não foi possível criar sua conta.";
+
+      switch (error.code) {
+        case "auth/email-already-in-use": {
+          errorMessage = "Este e-mail já está cadastrado.";
+          break;
+        }
+        case "auth/invalid-email": {
+          errorMessage = "Este e-mail é inválido.";
+          break;
+        }
+        case "auth/weak-password": {
+          errorMessage = "A senha deve conter no mínimo 6 caracteres.";
+          break;
+        }
+        default: {
+          console.warn(error);
+        }
+      }
+
+      Alert.alert("Cadastro", errorMessage);
     }
   }
 
