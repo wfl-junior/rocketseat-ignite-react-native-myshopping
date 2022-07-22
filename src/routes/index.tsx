@@ -1,13 +1,14 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer } from "@react-navigation/native";
+import React from "react";
+import { SignIn } from "../screens/SignIn";
+import { AppRoutes } from "./app.routes";
 
-import { AppRoutes } from './app.routes';
-import { SignIn } from '../screens/SignIn';
+export const Routes: React.FC = () => {
+  const isAuthenticated = false;
 
-export function Routes() {
   return (
     <NavigationContainer>
-      <AppRoutes />
+      {isAuthenticated ? <AppRoutes /> : <SignIn />}
     </NavigationContainer>
-  )
-}
+  );
+};
