@@ -15,6 +15,7 @@ export const FormBox: React.FC = () => {
         description,
         quantity,
         done: false,
+        createdAt: firestore.FieldValue.serverTimestamp(),
       });
 
       Alert.alert("Produto", "Produto adicionado com sucesso.");
