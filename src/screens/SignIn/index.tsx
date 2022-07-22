@@ -12,8 +12,7 @@ export const SignIn: React.FC = () => {
 
   async function handleSignIn() {
     try {
-      const { user } = await auth().signInWithEmailAndPassword(email, password);
-      console.log(user);
+      await auth().signInWithEmailAndPassword(email, password);
     } catch (error: any) {
       let errorMessage = "Não foi possível entrar.";
 
