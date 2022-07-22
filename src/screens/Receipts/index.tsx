@@ -4,11 +4,13 @@ import { FlatList } from "react-native";
 import { File, FileProps } from "../../components/File";
 import { Header } from "../../components/Header";
 import { Photo } from "../../components/Photo";
+import { formatTimeCreated } from "../../utils/formatTimeCreated";
 import { Container, PhotoInfo } from "./styles";
 
 export const Receipts: React.FC = () => {
   const [images, setImages] = useState<FileProps[]>([]);
   const [selectedImage, setSelectedImage] = useState("");
+  const [imageInfo, setImageInfo] = useState("");
 
   useEffect(() => {
     storage()
@@ -28,8 +30,14 @@ export const Receipts: React.FC = () => {
   }, []);
 
   async function handleShowImage(path: FileProps["path"]) {
-    const imageUrl = await storage().ref(path).getDownloadURL();
-    setSelectedImage(imageUrl);
+    const reference = storage().ref(path);
+    const [url, info] = await Promise.all([
+      reference.getDownloadURL(),
+      reference.getMetadata(),
+    ]);
+
+    setSelectedImage(url);
+    setImageInfo(`Upload realizado em ${formatTimeCreated(info.timeCreated)}`);
   }
 
   return (
@@ -38,7 +46,7 @@ export const Receipts: React.FC = () => {
 
       <Photo uri={selectedImage} />
 
-      <PhotoInfo>Informações da foto</PhotoInfo>
+      <PhotoInfo>{imageInfo}</PhotoInfo>
 
       <FlatList
         data={images}
