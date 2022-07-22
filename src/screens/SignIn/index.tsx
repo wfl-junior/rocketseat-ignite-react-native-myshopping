@@ -10,13 +10,25 @@ export const SignIn: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  async function handleSignInAnonymously() {
+  async function handleSignIn() {
     try {
-      const { user } = await auth().signInAnonymously();
+      const { user } = await auth().signInWithEmailAndPassword(email, password);
       console.log(user);
-    } catch (error) {
-      console.warn(error);
-      Alert.alert("Entrar", "Não foi possível entrar.");
+    } catch (error: any) {
+      let errorMessage = "Não foi possível entrar.";
+
+      switch (error.code) {
+        case "auth/user-not-found":
+        case "auth/wrong-password": {
+          errorMessage = "Credenciais inválidas.";
+          break;
+        }
+        default: {
+          console.warn(error);
+        }
+      }
+
+      Alert.alert("Entrar", errorMessage);
     }
   }
 
@@ -68,7 +80,7 @@ export const SignIn: React.FC = () => {
         onChangeText={setPassword}
       />
 
-      <Button title="Entrar" onPress={handleSignInAnonymously} />
+      <Button title="Entrar" onPress={handleSignIn} />
 
       <Account>
         <ButtonText title="Recuperar senha" onPress={() => {}} />
