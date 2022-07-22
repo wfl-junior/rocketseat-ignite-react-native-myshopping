@@ -5,10 +5,13 @@ import { Alert } from "react-native";
 import { Button } from "../../components/Button";
 import { Header } from "../../components/Header";
 import { Photo } from "../../components/Photo";
+import { formatBytes } from "../../utils/formatBytes";
 import { Container, Content, Progress, Transferred } from "./styles";
 
 export const Upload: React.FC = () => {
   const [image, setImage] = useState("");
+  const [bytesTransferred, setBytesTransferred] = useState("");
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   async function handlePickImage() {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -32,7 +35,23 @@ export const Upload: React.FC = () => {
       const imageExtension = image.split(".").pop() || "png";
       const reference = storage().ref(`/images/${fileName}.${imageExtension}`);
 
-      await reference.putFile(image);
+      const uploadTask = reference.putFile(image);
+      uploadTask.on("state_changed", snapshot => {
+        const percentage = (
+          (snapshot.bytesTransferred / snapshot.totalBytes) *
+          100
+        ).toFixed(0);
+
+        setUploadProgress(Number(percentage));
+
+        setBytesTransferred(
+          `${formatBytes(snapshot.bytesTransferred)} de ${formatBytes(
+            snapshot.totalBytes,
+          )} transferidos`,
+        );
+      });
+
+      await uploadTask;
       Alert.alert("Upload", "Upload concluído com sucesso.");
     } catch (error) {
       console.warn(error);
@@ -46,12 +65,10 @@ export const Upload: React.FC = () => {
 
       <Content>
         <Photo uri={image} onPress={handlePickImage} />
-
         <Button title="Fazer upload" onPress={handleUpload} />
 
-        <Progress>0%</Progress>
-
-        <Transferred>0 de 100 bytes transferido</Transferred>
+        <Progress>{uploadProgress}%</Progress>
+        <Transferred>{bytesTransferred}</Transferred>
       </Content>
     </Container>
   );
