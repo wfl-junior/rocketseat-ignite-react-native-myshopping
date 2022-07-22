@@ -1,32 +1,26 @@
-import React from 'react';
+import React from "react";
 
-import { Container, Account, Title, Subtitle } from './styles';
-import { ButtonText } from '../../components/ButtonText';
-import { Button } from '../../components/Button';
-import { Input } from '../../components/Input';
+import { Button } from "../../components/Button";
+import { ButtonText } from "../../components/ButtonText";
+import { Input } from "../../components/Input";
+import { Account, Container, Subtitle, Title } from "./styles";
 
-export function SignIn() {
+export const SignIn: React.FC = () => {
   return (
     <Container>
       <Title>MyShopping</Title>
-      <Subtitle>monte sua lista de compra te ajudar nas compras</Subtitle>
+      <Subtitle>Monte sua lista de compras para se organizar</Subtitle>
 
-      <Input
-        placeholder="e-mail"
-        keyboardType="email-address"
-      />
+      <Input placeholder="E-mail" keyboardType="email-address" />
 
-      <Input
-        placeholder="senha"
-        secureTextEntry
-      />
+      <Input placeholder="Senha" secureTextEntry />
 
-      <Button title="Entrar" onPress={() => { }} />
+      <Button title="Entrar" onPress={() => {}} />
 
       <Account>
-        <ButtonText title="Recuperar senha" onPress={() => { }} />
-        <ButtonText title="Criar minha conta" onPress={() => { }} />
+        <ButtonText title="Recuperar senha" onPress={() => {}} />
+        <ButtonText title="Criar minha conta" onPress={() => {}} />
       </Account>
     </Container>
   );
-}
+};
