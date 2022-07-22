@@ -1,6 +1,6 @@
 import storage from "@react-native-firebase/storage";
 import React, { useEffect, useState } from "react";
-import { FlatList } from "react-native";
+import { Alert, FlatList } from "react-native";
 import { File, FileProps } from "../../components/File";
 import { Header } from "../../components/Header";
 import { Photo } from "../../components/Photo";
@@ -30,14 +30,36 @@ export const Receipts: React.FC = () => {
   }, []);
 
   async function handleShowImage(path: FileProps["path"]) {
-    const reference = storage().ref(path);
-    const [url, info] = await Promise.all([
-      reference.getDownloadURL(),
-      reference.getMetadata(),
-    ]);
+    try {
+      const reference = storage().ref(path);
+      const [url, info] = await Promise.all([
+        reference.getDownloadURL(),
+        reference.getMetadata(),
+      ]);
 
-    setSelectedImage(url);
-    setImageInfo(`Upload realizado em ${formatTimeCreated(info.timeCreated)}`);
+      setSelectedImage(url);
+      setImageInfo(
+        `Upload realizado em ${formatTimeCreated(info.timeCreated)}`,
+      );
+    } catch (error) {
+      console.warn(error);
+      Alert.alert("Upload", "Não foi possível buscar informações do arquivo.");
+    }
+  }
+
+  async function handleDeleteImage(path: FileProps["path"]) {
+    try {
+      await storage().ref(path).delete();
+
+      setImages(images => {
+        return images.filter(image => image.path !== path);
+      });
+
+      Alert.alert("Upload", "Arquivo removido com sucesso.");
+    } catch (error) {
+      console.warn(error);
+      Alert.alert("Upload", "Não foi possível remover arquivo.");
+    }
   }
 
   return (
@@ -55,7 +77,7 @@ export const Receipts: React.FC = () => {
           <File
             data={image}
             onShow={() => handleShowImage(image.path)}
-            onDelete={() => {}}
+            onDelete={() => handleDeleteImage(image.path)}
           />
         )}
         contentContainerStyle={{ paddingBottom: 100 }}
