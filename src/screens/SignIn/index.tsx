@@ -60,6 +60,24 @@ export const SignIn: React.FC = () => {
     }
   }
 
+  async function handleForgotPassword() {
+    try {
+      await auth().sendPasswordResetEmail(email);
+
+      Alert.alert(
+        "Recuperar senha",
+        "Cheque o seu e-mail para redefinir sua senha.",
+      );
+    } catch (error) {
+      console.warn(error);
+
+      Alert.alert(
+        "Recuperar senha",
+        "Ocorreu um erro ao enviar o e-mail para recuperação de conta.",
+      );
+    }
+  }
+
   return (
     <Container>
       <Title>MyShopping</Title>
@@ -82,7 +100,7 @@ export const SignIn: React.FC = () => {
       <Button title="Entrar" onPress={handleSignIn} />
 
       <Account>
-        <ButtonText title="Recuperar senha" onPress={() => {}} />
+        <ButtonText title="Recuperar senha" onPress={handleForgotPassword} />
         <ButtonText title="Criar minha conta" onPress={handleSignUp} />
       </Account>
     </Container>
